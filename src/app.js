@@ -36,6 +36,8 @@ const express_1 = __importDefault(require("express"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = require("../build/routes");
+const dotenv_safe_1 = require("dotenv-safe");
+(0, dotenv_safe_1.config)();
 exports.app = (0, express_1.default)();
 // Use body parser to read sent json payloads
 exports.app.use(body_parser_1.default.urlencoded({

@@ -2,7 +2,9 @@ import express, { Response as ExResponse, Request as ExRequest } from "express";
 import swaggerUi from "swagger-ui-express";
 import bodyParser from "body-parser";
 import { RegisterRoutes } from "../build/routes";
+import { config } from "dotenv-safe";
 
+config()
 export const app = express();
 
 // Use body parser to read sent json payloads
