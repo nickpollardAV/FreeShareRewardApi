@@ -13,7 +13,7 @@ import {
 export class FreeShareController extends Controller {
   @SuccessResponse("201", "Created") // Custom success response
   @Post()
-  public async createUser(@Body() requestBody: any): Promise<void> {
+  public async claimFreeShare(@Body() requestBody: any): Promise<void> {
     this.setStatus(201); // set return status 201
     return;
   }

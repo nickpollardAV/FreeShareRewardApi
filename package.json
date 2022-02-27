@@ -9,7 +9,8 @@
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes \"",
     "build": "tsoa spec-and-routes && tsc",
     "start": "ts-node src/server.ts",
-    "test": "jest"
+    "test": "jest",
+    "run-docker-image": "docker run -p 3000:3000 free-share-api"
   },
   "dependencies": {
     "body-parser": "^1.19.2",
