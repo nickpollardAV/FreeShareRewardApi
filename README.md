@@ -1,2 +1,4 @@
-# FreeShareRewardApi
-An API to reward new users with a free share.
+# freeShareApi
+API to provide users with a free share
+
+test commit
