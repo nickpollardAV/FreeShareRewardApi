@@ -2,13 +2,13 @@
   "name": "freeShareApi",
   "version": "1.0.0",
   "main": "index.js",
-  "repository": "https://github.com/nickpollardAV/freeShareApi.git",
+  "repository": "https://github.com/nickpollardAV/FreeShareRewardApi.git",
   "author": "nickpollardAV <>",
   "license": "MIT",
   "scripts": {
     "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes \"",
     "build": "tsoa spec-and-routes && tsc",
-    "start": "node build/src/server.js",
+    "start": "ts-node src/server.ts",
     "test": "jest"
   },
   "dependencies": {
