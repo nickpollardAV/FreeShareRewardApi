@@ -1,12 +1,12 @@
 {
-  "name": "freeShareApi",
+  "name": "free-share-api",
   "version": "1.0.0",
   "main": "index.js",
   "repository": "https://github.com/nickpollardAV/FreeShareRewardApi.git",
   "author": "nickpollardAV <>",
   "license": "MIT",
   "scripts": {
-    "dev": "concurrently \"nodemon\" \"nodemon -x tsoa spec-and-routes \"",
+    "start-dev": "npx kill-port 3000 && yarn build && yarn start",
     "build": "tsoa spec-and-routes && tsc",
     "start": "ts-node src/server.ts",
     "test": "jest",

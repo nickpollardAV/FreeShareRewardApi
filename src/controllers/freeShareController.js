@@ -21,19 +21,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.FreeShareController = void 0;
 const tsoa_1 = require("tsoa");
 let FreeShareController = class FreeShareController extends tsoa_1.Controller {
-    createUser(requestBody) {
+    claimFreeShare(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
-            this.setStatus(201); // set return status 201
-            return;
+            this.setStatus(200); // set return status 201
+            return {
+                shareId: "chhwsk4rjwek"
+            };
         });
     }
 };
 __decorate([
-    (0, tsoa_1.SuccessResponse)("201", "Created") // Custom success response
-    ,
+    (0, tsoa_1.SuccessResponse)("200", "Success"),
+    (0, tsoa_1.Response)("400", "Bad Request"),
     (0, tsoa_1.Post)(),
     __param(0, (0, tsoa_1.Body)())
-], FreeShareController.prototype, "createUser", null);
+], FreeShareController.prototype, "claimFreeShare", null);
 FreeShareController = __decorate([
     (0, tsoa_1.Route)("/claim-free-share")
 ], FreeShareController);

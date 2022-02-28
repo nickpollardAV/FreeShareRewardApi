@@ -5,11 +5,36 @@
 		"parameters": {},
 		"requestBodies": {},
 		"responses": {},
-		"schemas": {},
+		"schemas": {
+			"PostSuccessResponseBody": {
+				"properties": {
+					"shareId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"shareId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"PostRequestBody": {
+				"properties": {
+					"userId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"userId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			}
+		},
 		"securitySchemes": {}
 	},
 	"info": {
-		"title": "freeShareApi",
+		"title": "free-share-api",
 		"version": "1.0.0",
 		"license": {
 			"name": "MIT"
@@ -23,10 +48,20 @@
 	"paths": {
 		"/claim-free-share": {
 			"post": {
-				"operationId": "CreateUser",
+				"operationId": "ClaimFreeShare",
 				"responses": {
-					"201": {
-						"description": "Created"
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/PostSuccessResponseBody"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request"
 					}
 				},
 				"security": [],
@@ -35,7 +70,9 @@
 					"required": true,
 					"content": {
 						"application/json": {
-							"schema": {}
+							"schema": {
+								"$ref": "#/components/schemas/PostRequestBody"
+							}
 						}
 					}
 				}

@@ -1,5 +1,8 @@
-test('test', () => {
-    const result = true
+import { getFreeShare } from "../src/services/getFreeShare";
+import { TestBroker } from "./testBroker";
 
-    expect(result).toBe(true)
-})
+test("getFreeShare: returns user a share which is listed in the Firm's rewards account", async() => {
+  const result = await getFreeShare(new TestBroker());
+
+  expect(result).toStrictEqual({ shareId: "testId1" });
+});

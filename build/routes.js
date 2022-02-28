@@ -8,7 +8,24 @@ const runtime_1 = require("@tsoa/runtime");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 const freeShareController_1 = require("./../src/controllers/freeShareController");
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-const models = {};
+const models = {
+    "PostSuccessResponseBody": {
+        "dataType": "refObject",
+        "properties": {
+            "shareId": { "dataType": "string", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PostRequestBody": {
+        "dataType": "refObject",
+        "properties": {
+            "userId": { "dataType": "string", "required": true },
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+};
 const validationService = new runtime_1.ValidationService(models);
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 function RegisterRoutes(app) {
@@ -16,16 +33,16 @@ function RegisterRoutes(app) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-    app.post('/claim-free-share', function FreeShareController_createUser(request, response, next) {
+    app.post('/claim-free-share', function FreeShareController_claimFreeShare(request, response, next) {
         const args = {
-            requestBody: { "in": "body", "name": "requestBody", "required": true, "dataType": "any" },
+            requestBody: { "in": "body", "name": "requestBody", "required": true, "ref": "PostRequestBody" },
         };
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         let validatedArgs = [];
         try {
             validatedArgs = getValidatedArgs(args, request, response);
             const controller = new freeShareController_1.FreeShareController();
-            const promise = controller.createUser.apply(controller, validatedArgs);
+            const promise = controller.claimFreeShare.apply(controller, validatedArgs);
             promiseHandler(controller, promise, response, undefined, next);
         }
         catch (err) {

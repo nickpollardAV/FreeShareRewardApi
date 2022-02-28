@@ -37,6 +37,7 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const routes_1 = require("../build/routes");
 const dotenv_safe_1 = require("dotenv-safe");
+const tsoa_1 = require("tsoa");
 (0, dotenv_safe_1.config)();
 exports.app = (0, express_1.default)();
 // Use body parser to read sent json payloads
@@ -48,3 +49,18 @@ exports.app.use("/docs", swagger_ui_express_1.default.serve, (_req, res) => __aw
     return res.send(swagger_ui_express_1.default.generateHTML(yield Promise.resolve().then(() => __importStar(require("../build/swagger.json")))));
 }));
 (0, routes_1.RegisterRoutes)(exports.app);
+exports.app.use(function errorHandler(err, req, res, next) {
+    if (err instanceof tsoa_1.ValidateError) {
+        console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
+        return res.status(400).json({
+            message: "Validation Failed",
+            details: err === null || err === void 0 ? void 0 : err.fields,
+        });
+    }
+    if (err instanceof Error) {
+        return res.status(500).json({
+            message: "Internal Server Error",
+        });
+    }
+    next();
+});

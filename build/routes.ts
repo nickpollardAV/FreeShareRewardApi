@@ -9,6 +9,22 @@ import * as express from 'express';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "PostSuccessResponseBody": {
+        "dataType": "refObject",
+        "properties": {
+            "shareId": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "PostRequestBody": {
+        "dataType": "refObject",
+        "properties": {
+            "userId": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
 const validationService = new ValidationService(models);
 
@@ -21,9 +37,9 @@ export function RegisterRoutes(app: express.Router) {
     // ###########################################################################################################
         app.post('/claim-free-share',
 
-            function FreeShareController_createUser(request: any, response: any, next: any) {
+            function FreeShareController_claimFreeShare(request: any, response: any, next: any) {
             const args = {
-                    requestBody: {"in":"body","name":"requestBody","required":true,"dataType":"any"},
+                    requestBody: {"in":"body","name":"requestBody","required":true,"ref":"PostRequestBody"},
             };
 
             // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
@@ -35,7 +51,7 @@ export function RegisterRoutes(app: express.Router) {
                 const controller = new FreeShareController();
 
 
-              const promise = controller.createUser.apply(controller, validatedArgs as any);
+              const promise = controller.claimFreeShare.apply(controller, validatedArgs as any);
               promiseHandler(controller, promise, response, undefined, next);
             } catch (err) {
                 return next(err);
