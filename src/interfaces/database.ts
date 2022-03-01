@@ -1,3 +1,7 @@
+import { RewardAccountPosition } from "./rewardAccountPosition";
+
 export interface Database {
-    getCurrentCpa():Promise<number>
+    addShare(share: RewardAccountPosition): Promise<void>,
+    getTotalSpentOnShares(): Promise<number>,
+    getTotalNumberOfSharesDistributed(): Promise<number>
 }
