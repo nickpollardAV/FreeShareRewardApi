@@ -9,7 +9,7 @@
     "start-dev": "npx kill-port 3000 && yarn build && yarn start",
     "build": "tsoa spec-and-routes && tsc",
     "start": "ts-node src/server.ts",
-    "test": "jest getFreeShare.test.ts",
+    "test": "jest getFreeShare.test.ts buyDailyShares.test.ts",
     "run-docker-image": "docker run -p 3000:3000 free-share-api"
   },
   "dependencies": {

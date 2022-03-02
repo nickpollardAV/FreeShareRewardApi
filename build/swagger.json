@@ -77,6 +77,55 @@
 					}
 				}
 			}
+		},
+		"/get-daily-shares": {
+			"post": {
+				"operationId": "GetDailyShares",
+				"responses": {
+					"200": {
+						"description": "Success",
+						"content": {
+							"application/json": {
+								"schema": {
+									"properties": {
+										"success": {
+											"type": "boolean"
+										}
+									},
+									"required": [
+										"success"
+									],
+									"type": "object"
+								}
+							}
+						}
+					},
+					"400": {
+						"description": "Bad Request"
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"properties": {
+									"numberOfSharesToPurchase": {
+										"type": "number",
+										"format": "double"
+									}
+								},
+								"required": [
+									"numberOfSharesToPurchase"
+								],
+								"type": "object"
+							}
+						}
+					}
+				}
+			}
 		}
 	},
 	"servers": [
