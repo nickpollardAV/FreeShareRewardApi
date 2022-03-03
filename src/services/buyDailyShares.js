@@ -14,14 +14,19 @@ class BuyDailyShares {
     constructor(broker) {
         this.broker = broker;
     }
-    buyShares(amount) {
+    buyShares(numberOfShares) {
         return __awaiter(this, void 0, void 0, function* () {
             const marketOpen = yield this.broker.isMarketOpen();
             if (!marketOpen.open) {
                 throw marketOpen;
             }
             const tradableAssets = yield this.broker.listTradableAssets();
-            yield this.broker.buySharesInRewardsAccount(tradableAssets[0].tickerSymbol, 1);
+            console.log("HERE!");
+            for (let i = 0; i < numberOfShares; i++) {
+                console.log("HERE2");
+                yield this.broker.buySharesInRewardsAccount(tradableAssets[0].tickerSymbol, 1);
+            }
+            return "hi";
         });
     }
 }
