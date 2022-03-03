@@ -1,4 +1,6 @@
-export class TestBroker {
+import { Broker } from "../src/interfaces/broker";
+
+export class TestBroker implements Broker {
   sharesAvailableInFirmRewardAccount: any;
   marketOpen: any;
   brokerTradableAssets: any;
@@ -13,6 +15,7 @@ export class TestBroker {
       (this.marketOpen = params?.marketOpen);
     this.brokerTradableAssets = params?.brokerTradableAssets;
   }
+
   async getRewardsAccountPositions(): Promise<
     Array<{ tickerSymbol: string; quantity: number; sharePrice: number }>
   > {
@@ -32,8 +35,13 @@ export class TestBroker {
   }
 
   async listTradableAssets(): Promise<Array<{ tickerSymbol: string }>> {
-    //  TODO change this to remove price
-    return this.brokerTradableAssets;
+    let tradableAssets: { tickerSymbol: string }[] = [];
+
+    this.brokerTradableAssets.forEach(
+      (asset: { tickerSymbol: string; price: number }) =>
+        tradableAssets.push({ tickerSymbol: asset.tickerSymbol })
+    );
+    return tradableAssets;
   }
 
   async buySharesInRewardsAccount(
@@ -43,5 +51,13 @@ export class TestBroker {
     return { success: true, sharePricePaid: 10 };
   }
 
-  async getLatestPrice(tickerSymbol: string): Promise<{ sharePrice: number }> {}
+  async getLatestPrice(tickerSymbol: string): Promise<{ sharePrice: number }> {
+    for (const asset of this.brokerTradableAssets) {
+      if (asset.tickerSymbol == tickerSymbol) {
+        return { sharePrice: asset.price };
+      }
+    }
+
+    throw "Share not recognised by system";
+  }
 }

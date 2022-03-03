@@ -2,7 +2,6 @@ import { Broker } from "../interfaces/broker";
 import { Database } from "../interfaces/database";
 import { GetFreeShareApp } from "../interfaces/getFreeShareApp";
 import { PostSuccessResponseBody } from "../interfaces/postSuccessResponseBody";
-import { getBrokerPositionsForCpa } from "./getBrokerPositionsForCpa";
 
 export class MainApp implements GetFreeShareApp {
   broker: Broker;

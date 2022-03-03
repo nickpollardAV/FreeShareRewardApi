@@ -1,5 +1,7 @@
 import { Broker } from "../interfaces/broker";
 import { Database } from "../interfaces/database";
+import { addPriceToAssetList } from "./addPriceToAssetList";
+import { calculateAssetToPurchase } from "./calculateAssetToPurchase";
 
 export class BuyDailyShares {
   private broker: Broker;
@@ -12,7 +14,7 @@ export class BuyDailyShares {
     this.targetCpa = targetCpa;
   }
 
-  async buyShares(numberOfShares: number): Promise<string> {
+  async buyShares(numberOfShares: number): Promise<void> {
     const marketOpen = await this.broker.isMarketOpen();
     if (!marketOpen.open) {
       throw marketOpen;
@@ -20,13 +22,25 @@ export class BuyDailyShares {
 
     const tradableAssets = await this.broker.listTradableAssets();
 
-    const assetToPurchase =
+    const tradableAssetsWithPrice = await addPriceToAssetList(
+      tradableAssets,
+      this.broker
+    );
+
+    const totalSpentOnShares = await this.database.getTotalSpentOnShares();
+    const totalNumberOfSharesDistributed = await this.database.getTotalNumberOfSharesDistributed();
+    const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
+
     for (let i = 0; i < numberOfShares; i++) {
+      const assetToPurchase = calculateAssetToPurchase(
+        tradableAssetsWithPrice,
+        currentCpa,
+        this.targetCpa
+      );
       await this.broker.buySharesInRewardsAccount(
-        tradableAssets[0].tickerSymbol,
+        assetToPurchase.tickerSymbol,
         1
       );
     }
-    return "hi";
   }
 }
