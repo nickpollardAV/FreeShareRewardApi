@@ -1,9 +1,15 @@
 import { Broker } from "../interfaces/broker";
+import { Database } from "../interfaces/database";
 
 export class BuyDailyShares {
   private broker: Broker;
-  constructor(broker: Broker) {
+  private database: Database;
+  private targetCpa: number;
+
+  constructor(broker: Broker, database: Database, targetCpa: number) {
     this.broker = broker;
+    this.database = database;
+    this.targetCpa = targetCpa;
   }
 
   async buyShares(numberOfShares: number): Promise<string> {
@@ -13,10 +19,9 @@ export class BuyDailyShares {
     }
 
     const tradableAssets = await this.broker.listTradableAssets();
-    console.log("HERE!");
-    for (let i = 0; i < numberOfShares; i++) {
-      console.log("HERE2");
 
+    const assetToPurchase =
+    for (let i = 0; i < numberOfShares; i++) {
       await this.broker.buySharesInRewardsAccount(
         tradableAssets[0].tickerSymbol,
         1

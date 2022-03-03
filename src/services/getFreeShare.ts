@@ -2,9 +2,7 @@ import { Broker } from "../interfaces/broker";
 import { Database } from "../interfaces/database";
 import { GetFreeShareApp } from "../interfaces/getFreeShareApp";
 import { PostSuccessResponseBody } from "../interfaces/postSuccessResponseBody";
-import { getRewardAccountPositionForCpa } from "./getRewardAccountPositionsForCpa";
-
-const targetCpa = process.env.TARGET_CPA || 100;
+import { getBrokerPositionsForCpa } from "./getBrokerPositionsForCpa";
 
 export class MainApp implements GetFreeShareApp {
   broker: Broker;
@@ -24,7 +22,7 @@ export class MainApp implements GetFreeShareApp {
       (await this.database.getTotalSpentOnShares()) /
       (await this.database.getTotalNumberOfSharesDistributed());
 
-    const newPositions = getRewardAccountPositionForCpa(
+    const newPositions = getBrokerPositionsForCpa(
       rewardAccountPositions,
       currentCpa,
       this.targetCpa
