@@ -1,11 +1,18 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateAssetToPurchase = void 0;
-function calculateAssetToPurchase(brokerAccountPositions, currentCpa, targetCpa) {
+function calculateAssetToPurchase(brokerAccountPositions, currentCpa, targetCpa, minimumSharePrice, maximumSharePrice) {
     const currentlyBelowTargetCpa = targetCpa > currentCpa;
     let chosenPosition;
+    let positionsWithinPriceRange = [];
+    brokerAccountPositions.forEach(position => {
+        if (minimumSharePrice < position.price &&
+            position.price < maximumSharePrice) {
+            positionsWithinPriceRange.push(position);
+        }
+    });
     while (!chosenPosition) {
-        const randomPosition = brokerAccountPositions[Math.floor(Math.random() * brokerAccountPositions.length)];
+        const randomPosition = positionsWithinPriceRange[Math.floor(Math.random() * positionsWithinPriceRange.length)];
         if (currentlyBelowTargetCpa) {
             if (randomPosition.price > currentCpa) {
                 chosenPosition = randomPosition;
@@ -18,7 +25,5 @@ function calculateAssetToPurchase(brokerAccountPositions, currentCpa, targetCpa)
         }
     }
     return chosenPosition;
-    // }
-    // throw "Error identifying asset";
 }
 exports.calculateAssetToPurchase = calculateAssetToPurchase;

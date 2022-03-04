@@ -101,3 +101,43 @@ test("buyDailyShares: if current cost per acquisition is above target CPA, the n
 
   expect(buySharesInRewardsAccountSpy).toBeCalledWith("tickerId1", 1);
 });
+
+test("buyDailyShares: does not purchase share that is above the max share value allowed", async () => {
+  //this test would need to be seeded
+  const buyDailyShares = new BuyDailyShares(
+    new TestBroker({
+      marketOpen: true,
+      brokerTradableAssets: [
+        { tickerSymbol: "tickerId1", price: 10 },
+        { tickerSymbol: "tickerId13", price: 180 },
+        { tickerSymbol: "tickerId5", price: 180 },
+        { tickerSymbol: "tickerId6", price: 180 },
+        { tickerSymbol: "tickerId7", price: 180 },
+        { tickerSymbol: "tickerId8", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId9", price: 180 },
+        { tickerSymbol: "tickerId2", price: 150 }
+      ]
+    }),
+    new TestDatabase({
+      totalSpentOnShares: 100,
+      totalNumberOfSharesDistributed: 2
+    }),
+    140,
+    0,
+    160
+  );
+  const buySharesInRewardsAccountSpy = jest.spyOn(
+    TestBroker.prototype,
+    "buySharesInRewardsAccount"
+  );
+
+  await buyDailyShares.buyShares(1);
+
+  expect(buySharesInRewardsAccountSpy).toBeCalledWith("tickerId2", 1);
+});

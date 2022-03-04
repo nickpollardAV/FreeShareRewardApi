@@ -42,11 +42,11 @@ let GetDailySharesController = class GetDailySharesController extends tsoa_1.Con
                     { tickerSymbol: "tickerId12", price: 300 },
                     { tickerSymbol: "tickerId13", price: 22 }
                 ],
-                marketOpen: true
+                marketOpen: process.env.MARKET_OPEN === "true"
             }), new testDatabase_1.TestDatabase({
                 totalSpentOnShares: 100,
                 totalNumberOfSharesDistributed: 2
-            }), 120);
+            }), +(process.env.TARGET_CPA || "100"), +(process.env.MINIMUM_SHARE_PRICE || "0"), +(process.env.MAXIMUM_SHARE_PRICE || "1000"));
             yield buyDailySharesApp.buyShares(requestBody.numberOfSharesToPurchase);
             this.setStatus(200); // set return status 201
             return {

@@ -1,16 +1,28 @@
 export function calculateAssetToPurchase(
   brokerAccountPositions: { tickerSymbol: string; price: number }[],
   currentCpa: number,
-  targetCpa: number
+  targetCpa: number,
+  minimumSharePrice: number,
+  maximumSharePrice: number
 ): { tickerSymbol: string; price: number } {
   const currentlyBelowTargetCpa = targetCpa > currentCpa;
 
   let chosenPosition;
 
+  let positionsWithinPriceRange: { tickerSymbol: string; price: number }[] = [];
+  brokerAccountPositions.forEach(position => {
+    if (
+      minimumSharePrice < position.price &&
+      position.price < maximumSharePrice
+    ) {
+      positionsWithinPriceRange.push(position);
+    }
+  });
+
   while (!chosenPosition) {
     const randomPosition =
-      brokerAccountPositions[
-        Math.floor(Math.random() * brokerAccountPositions.length)
+      positionsWithinPriceRange[
+        Math.floor(Math.random() * positionsWithinPriceRange.length)
       ];
 
     if (currentlyBelowTargetCpa) {
