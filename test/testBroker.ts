@@ -60,4 +60,12 @@ export class TestBroker implements Broker {
 
     throw Error("Share not recognised by system");
   }
+
+  async moveSharesFromRewardsAccount(
+    toAccount: string,
+    tickerSymbol: string,
+    quantity: number
+  ): Promise<{ success: boolean }> {
+    return { success: true };
+  }
 }

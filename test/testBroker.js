@@ -53,5 +53,10 @@ class TestBroker {
             throw Error("Share not recognised by system");
         });
     }
+    moveSharesFromRewardsAccount(toAccount, tickerSymbol, quantity) {
+        return __awaiter(this, void 0, void 0, function* () {
+            return { success: true };
+        });
+    }
 }
 exports.TestBroker = TestBroker;

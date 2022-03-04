@@ -1,41 +1,30 @@
 import { Broker } from "../interfaces/broker";
 import { Database } from "../interfaces/database";
-import { GetFreeShareApp } from "../interfaces/getFreeShareApp";
 import { PostSuccessResponseBody } from "../interfaces/postSuccessResponseBody";
 
-export class MainApp implements GetFreeShareApp {
+export class GetFreeShareApp {
   broker: Broker;
   database: Database;
-  targetCpa: number;
-  constructor(broker: Broker, database: Database, targetCpa: number) {
+  constructor(broker: Broker, database: Database) {
     (this.broker = broker), (this.database = database);
-    this.targetCpa = targetCpa;
   }
 
-  async getFreeShare(): Promise<PostSuccessResponseBody> {
-    return { shareId: "test" };
-  }
+  async getFreeShare(userId: string): Promise<PostSuccessResponseBody> {
+    const rewardAccountPositions = await this.database.getAccountPositions();
 
-  // async getFreeShare(): Promise<PostSuccessResponseBody> {
-  // const rewardAccountPositions = await this.broker.getRewardsAccountPositions();
-  // if (rewardAccountPositions.length == 0) {
-  //   throw "No available account positions";
-  // }
-  // const currentCpa =
-  //   (await this.database.getTotalSpentOnShares()) /
-  //   (await this.database.getTotalNumberOfSharesDistributed());
-  //
-  // const newPositions = getBrokerPositionsForCpa(
-  //   rewardAccountPositions,
-  //   currentCpa,
-  //   this.targetCpa
-  // );
-  //
-  // const randomPosition =
-  //   newPositions[Math.floor(Math.random() * newPositions.length)];
-  //
-  // await this.database.addShare(randomPosition);
-  //
-  // return { shareId: randomPosition.tickerSymbol };
-  // }
+    const randomPosition =
+      rewardAccountPositions[
+        Math.floor(Math.random() * rewardAccountPositions.length)
+      ];
+
+    await this.broker.moveSharesFromRewardsAccount(
+      userId,
+      randomPosition.tickerSymbol,
+      randomPosition.quantity
+    );
+
+    await this.database.updateShareStatusToDistributed(randomPosition.id);
+
+    return { shareId: randomPosition.tickerSymbol };
+  }
 }

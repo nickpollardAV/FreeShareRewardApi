@@ -13,4 +13,9 @@ export interface Broker {
   ): Promise<{ success: boolean; sharePricePaid: number }>;
   listTradableAssets(): Promise<Array<{ tickerSymbol: string }>>;
   getLatestPrice(tickerSymbol: string): Promise<{ sharePrice: number }>;
+  moveSharesFromRewardsAccount(
+    toAccount: string,
+    tickerSymbol: string,
+    quantity: number
+  ): Promise<{ success: boolean }>;
 }

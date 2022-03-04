@@ -9,16 +9,19 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.MainApp = void 0;
-class MainApp {
-    constructor(broker, database, targetCpa) {
+exports.GetFreeShareApp = void 0;
+class GetFreeShareApp {
+    constructor(broker, database) {
         (this.broker = broker), (this.database = database);
-        this.targetCpa = targetCpa;
     }
-    getFreeShare() {
+    getFreeShare(userId) {
         return __awaiter(this, void 0, void 0, function* () {
-            return { shareId: "test" };
+            const rewardAccountPositions = yield this.database.getAccountPositions();
+            const randomPosition = rewardAccountPositions[Math.floor(Math.random() * rewardAccountPositions.length)];
+            yield this.broker.moveSharesFromRewardsAccount(userId, randomPosition.tickerSymbol, randomPosition.quantity);
+            yield this.database.updateShareStatusToDistributed(randomPosition.id);
+            return { shareId: randomPosition.tickerSymbol };
         });
     }
 }
-exports.MainApp = MainApp;
+exports.GetFreeShareApp = GetFreeShareApp;

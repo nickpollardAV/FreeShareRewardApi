@@ -1,87 +1,80 @@
-import { MainApp } from "../src/services/getFreeShare";
+import { GetFreeShareApp } from "../src/services/getFreeShare";
 import { TestBroker } from "./testBroker";
 import { TestDatabase } from "./testDatabase";
 
-test("getFreeShare: returns user a share which is listed in the Firm's rewards account", async () => {
-  const app = new MainApp(
-    new TestBroker({
-      sharesAvailableInFirmRewardAccount: [
-        { tickerSymbol: "testId1", quantity: 1, sharePrice: 10.0 },
-      ],
-    }),
-    new TestDatabase(),
-    100
+test("getFreeShare: returns user a share which is saved in the database", async () => {
+  const app = new GetFreeShareApp(
+    new TestBroker(),
+    new TestDatabase({
+      sharesAdded: [
+        {
+          id: "testGuid",
+          tickerSymbol: "testId1",
+          quantity: 1,
+          sharePrice: 10
+        }
+      ]
+    })
   );
 
-  const result = await app.getFreeShare();
+  const result = await app.getFreeShare("accountId1");
 
   expect(result).toStrictEqual({ shareId: "testId1" });
 });
 
-test("getFreeShare: throws error if no shares listed in the Firm's rewards account", async () => {
-  const app = new MainApp(new TestBroker(), new TestDatabase(), 100);
-
-  let error;
-  try {
-    const result = await app.getFreeShare();
-    console.log(result);
-  } catch (e) {
-    error = e;
-  }
-
-  expect(error).toBeTruthy;
-});
-
-test("getFreeShare: if current cost per acquisition is below target CPA, the next share distributed is above current cost per acquisition", async () => {
-  const app = new MainApp(
-    new TestBroker({
-      sharesAvailableInFirmRewardAccount: [
-        { tickerSymbol: "testId1", quantity: 1, sharePrice: 10.0 },
-        { tickerSymbol: "testId2", quantity: 1, sharePrice: 180.0 },
-      ],
-    }),
-    new TestDatabase({ totalSpentOnShares: 100, totalNumberOfSharesDistributed: 2 }),
-    100
+test("getFreeShare: after a share is distributed, marks the share as distributed in the database", async () => {
+  const app = new GetFreeShareApp(
+    new TestBroker(),
+    new TestDatabase({
+      sharesAdded: [
+        {
+          id: "testGuid",
+          tickerSymbol: "testId1",
+          quantity: 1,
+          sharePrice: 10
+        }
+      ]
+    })
+  );
+  const updateShareStatusToDistributedSpy = jest.spyOn(
+    TestDatabase.prototype,
+    "updateShareStatusToDistributed"
   );
 
-  const result = await app.getFreeShare();
+  await app.getFreeShare("accountId1");
 
-  expect(result).toStrictEqual({ shareId: "testId2" });
+  expect(updateShareStatusToDistributedSpy).toBeCalledWith("testGuid");
 });
 
-test("getFreeShare: if current cost per acquisition is above target CPA, the next share distributed is below current cost per acquisition", async () => {
-  const app = new MainApp(
-    new TestBroker({
-      sharesAvailableInFirmRewardAccount: [
-        { tickerSymbol: "testId1", quantity: 1, sharePrice: 10.0 },
-        { tickerSymbol: "testId2", quantity: 1, sharePrice: 180.0 },
-      ],
-    }),
-    new TestDatabase({ totalSpentOnShares: 300, totalNumberOfSharesDistributed: 2 }),
-    100
+test("getFreeShare: transfers share from rewards account to user account", async () => {
+  const broker = new TestBroker();
+  const moveSharesFromRewardsAccountSpy = jest.spyOn(
+    TestBroker.prototype,
+    "moveSharesFromRewardsAccount"
   );
 
-  const result = await app.getFreeShare();
-
-  expect(result).toStrictEqual({ shareId: "testId1" });
-});
-
-test("getFreeShare: after a share is distributed, updates the database with distributed share", async () => {
-  const database = new TestDatabase({ totalSpentOnShares: 100, totalNumberOfSharesDistributed: 2 })
-  const updateDatabaseWithCpaSpy = jest.spyOn(TestDatabase.prototype, "addShare")
-  
-  const app = new MainApp(
-    new TestBroker({
-      sharesAvailableInFirmRewardAccount: [
-        { tickerSymbol: "testId1", quantity: 1, sharePrice: 10.0 },
-        { tickerSymbol: "testId2", quantity: 1, sharePrice: 180.0 },
+  const app = new GetFreeShareApp(
+    broker,
+    new TestDatabase({
+      sharesAdded: [
+        {
+          id: "testGuid",
+          tickerSymbol: "tickerId1",
+          quantity: 1,
+          sharePrice: 180.0
+        }
       ],
-    }),
-    database,
-    100
+
+      totalSpentOnShares: 100,
+      totalNumberOfSharesDistributed: 2
+    })
   );
 
-  await app.getFreeShare();
+  await app.getFreeShare("accountId1");
 
-  expect(updateDatabaseWithCpaSpy).toBeCalledWith({ tickerSymbol: "testId2", quantity: 1, sharePrice: 180.0 });
+  expect(moveSharesFromRewardsAccountSpy).toBeCalledWith(
+    "accountId1",
+    "tickerId1",
+    1
+  );
 });

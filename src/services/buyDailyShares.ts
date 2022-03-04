@@ -3,6 +3,7 @@ import { Database } from "../interfaces/database";
 import { addPriceToAssetList } from "./addPriceToAssetList";
 import { calculateAssetToPurchase } from "./calculateAssetToPurchase";
 import * as fs from "fs";
+import { v4 as uuidv4 } from "uuid";
 
 export class BuyDailyShares {
   private broker: Broker;
@@ -57,6 +58,13 @@ export class BuyDailyShares {
         assetToPurchase.tickerSymbol,
         1
       );
+
+      const share = {
+        id: uuidv4(),
+        tickerSymbol: assetToPurchase.tickerSymbol,
+        quantity: 1,
+        sharePrice: assetToPurchase.price
+      };
       await this.database.addShare({
         tickerSymbol: assetToPurchase.tickerSymbol,
         quantity: 1,
@@ -64,9 +72,8 @@ export class BuyDailyShares {
       });
       console.log("Current CPA: " + currentCpa);
 
-      purchasedAssetList.push(assetToPurchase);
+      purchasedAssetList.push(share);
     }
-
     if (process.env.SAVE_ACQUIRED_SHARES == "true") {
       fs.writeFileSync(
         "purchased-shares-for-rewards.json",

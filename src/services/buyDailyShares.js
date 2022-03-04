@@ -32,6 +32,7 @@ exports.BuyDailyShares = void 0;
 const addPriceToAssetList_1 = require("./addPriceToAssetList");
 const calculateAssetToPurchase_1 = require("./calculateAssetToPurchase");
 const fs = __importStar(require("fs"));
+const uuid_1 = require("uuid");
 class BuyDailyShares {
     constructor(broker, database, targetCpa, minimumSharePrice, maximumSharePrice) {
         this.broker = broker;
@@ -56,13 +57,19 @@ class BuyDailyShares {
                 const assetToPurchase = (0, calculateAssetToPurchase_1.calculateAssetToPurchase)(tradableAssetsWithPrice, currentCpa, this.targetCpa, this.minimumSharePrice, this.maximumSharePrice);
                 console.log(assetToPurchase);
                 yield this.broker.buySharesInRewardsAccount(assetToPurchase.tickerSymbol, 1);
+                const share = {
+                    id: (0, uuid_1.v4)(),
+                    tickerSymbol: assetToPurchase.tickerSymbol,
+                    quantity: 1,
+                    sharePrice: assetToPurchase.price
+                };
                 yield this.database.addShare({
                     tickerSymbol: assetToPurchase.tickerSymbol,
                     quantity: 1,
                     sharePrice: assetToPurchase.price
                 });
                 console.log("Current CPA: " + currentCpa);
-                purchasedAssetList.push(assetToPurchase);
+                purchasedAssetList.push(share);
             }
             if (process.env.SAVE_ACQUIRED_SHARES == "true") {
                 fs.writeFileSync("purchased-shares-for-rewards.json", JSON.stringify({ shares: purchasedAssetList }));
