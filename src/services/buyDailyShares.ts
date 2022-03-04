@@ -18,7 +18,8 @@ export class BuyDailyShares {
   async buyShares(numberOfShares: number): Promise<void> {
     const marketOpen = await this.broker.isMarketOpen();
     if (!marketOpen.open) {
-      throw Error("Market not open");
+      throw Error(JSON.stringify(marketOpen));
+      // throw Error("Market not open");
     }
 
     const tradableAssets = await this.broker.listTradableAssets();
@@ -28,11 +29,11 @@ export class BuyDailyShares {
       this.broker
     );
 
-    const totalSpentOnShares = await this.database.getTotalSpentOnShares();
-    const totalNumberOfSharesDistributed = await this.database.getTotalNumberOfSharesDistributed();
-    const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
-
     for (let i = 0; i < numberOfShares; i++) {
+      const totalSpentOnShares = await this.database.getTotalSpentOnShares();
+      const totalNumberOfSharesDistributed = await this.database.getTotalNumberOfSharesDistributed();
+      const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
+
       const assetToPurchase = calculateAssetToPurchase(
         tradableAssetsWithPrice,
         currentCpa,

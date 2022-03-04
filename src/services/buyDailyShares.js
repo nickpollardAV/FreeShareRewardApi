@@ -26,10 +26,10 @@ class BuyDailyShares {
             }
             const tradableAssets = yield this.broker.listTradableAssets();
             const tradableAssetsWithPrice = yield (0, addPriceToAssetList_1.addPriceToAssetList)(tradableAssets, this.broker);
-            const totalSpentOnShares = yield this.database.getTotalSpentOnShares();
-            const totalNumberOfSharesDistributed = yield this.database.getTotalNumberOfSharesDistributed();
-            const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
             for (let i = 0; i < numberOfShares; i++) {
+                const totalSpentOnShares = yield this.database.getTotalSpentOnShares();
+                const totalNumberOfSharesDistributed = yield this.database.getTotalNumberOfSharesDistributed();
+                const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
                 const assetToPurchase = (0, calculateAssetToPurchase_1.calculateAssetToPurchase)(tradableAssetsWithPrice, currentCpa, this.targetCpa);
                 console.log(assetToPurchase);
                 yield this.broker.buySharesInRewardsAccount(assetToPurchase.tickerSymbol, 1);

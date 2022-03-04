@@ -5,17 +5,24 @@ export function calculateAssetToPurchase(
 ): { tickerSymbol: string; price: number } {
   const currentlyBelowTargetCpa = targetCpa > currentCpa;
 
-  for (const position of brokerAccountPositions) {
+  let chosenPosition;
+
+  while (!chosenPosition) {
+    const randomPosition =
+      brokerAccountPositions[
+        Math.floor(Math.random() * brokerAccountPositions.length)
+      ];
+
     if (currentlyBelowTargetCpa) {
-      if (position.price > currentCpa) {
-        return position;
+      if (randomPosition.price > currentCpa) {
+        chosenPosition = randomPosition;
       }
     } else {
-      if (position.price <= currentCpa) {
-        return position;
+      if (randomPosition.price <= currentCpa) {
+        chosenPosition = randomPosition;
       }
     }
   }
 
-  throw "Error identifying asset";
+  return chosenPosition;
 }

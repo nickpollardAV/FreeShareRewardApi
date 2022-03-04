@@ -57,6 +57,7 @@ exports.app.use(function errorHandler(err, req, res, next) {
             details: err === null || err === void 0 ? void 0 : err.fields
         });
     }
+    console.log(err);
     // if (err instanceof Error) {
     return res.status(500).json({
         message: "Internal Server Error"

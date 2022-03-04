@@ -7,7 +7,7 @@ beforeEach(() => {
   jest.clearAllMocks();
 });
 
-test("buyDailyShares: throws error with next market opening/closing time if user attempts to buy shares when market is not open", async () => {
+test("buyDailyShares: throws error if user attempts to buy shares when market is not open", async () => {
   const buyDailyShares = new BuyDailyShares(
     new TestBroker({ marketOpen: false }),
     new TestDatabase({
@@ -24,11 +24,7 @@ test("buyDailyShares: throws error with next market opening/closing time if user
     error = e;
   }
 
-  expect(error).toStrictEqual({
-    open: false,
-    nextOpeningTime: "01-02-2021-09:00",
-    nextClosingTime: "01-02-2021-16:00"
-  });
+  expect(error).toBeTruthy();
 });
 
 test("buyDailyShares: buys 10 shares for rewards account when number specified is 10", async () => {
