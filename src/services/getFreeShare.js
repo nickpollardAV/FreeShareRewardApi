@@ -10,8 +10,6 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.MainApp = void 0;
-const getRewardAccountPositionsForCpa_1 = require("./getRewardAccountPositionsForCpa");
-const targetCpa = process.env.TARGET_CPA || 100;
 class MainApp {
     constructor(broker, database, targetCpa) {
         (this.broker = broker), (this.database = database);
@@ -19,16 +17,7 @@ class MainApp {
     }
     getFreeShare() {
         return __awaiter(this, void 0, void 0, function* () {
-            const rewardAccountPositions = yield this.broker.getRewardsAccountPositions();
-            if (rewardAccountPositions.length == 0) {
-                throw "No available account positions";
-            }
-            const currentCpa = (yield this.database.getTotalSpentOnShares()) /
-                (yield this.database.getTotalNumberOfSharesDistributed());
-            const newPositions = (0, getRewardAccountPositionsForCpa_1.getRewardAccountPositionForCpa)(rewardAccountPositions, currentCpa, this.targetCpa);
-            const randomPosition = newPositions[Math.floor(Math.random() * newPositions.length)];
-            yield this.database.addShare(randomPosition);
-            return { shareId: randomPosition.tickerSymbol };
+            return { shareId: "test" };
         });
     }
 }

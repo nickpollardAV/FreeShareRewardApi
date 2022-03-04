@@ -13,11 +13,13 @@ exports.TestDatabase = void 0;
 class TestDatabase {
     constructor(params) {
         this.totalSpentOnShares = (params === null || params === void 0 ? void 0 : params.totalSpentOnShares) || 200;
-        this.totalNumberOfSharesDistributed = (params === null || params === void 0 ? void 0 : params.totalNumberOfSharesDistributed) || 2;
+        this.totalNumberOfSharesDistributed =
+            (params === null || params === void 0 ? void 0 : params.totalNumberOfSharesDistributed) || 2;
     }
     addShare(share) {
         return __awaiter(this, void 0, void 0, function* () {
-            //
+            this.totalSpentOnShares += share.sharePrice;
+            this.totalNumberOfSharesDistributed += 1;
         });
     }
     getTotalSpentOnShares() {

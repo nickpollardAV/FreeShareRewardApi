@@ -12,8 +12,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.TestBroker = void 0;
 class TestBroker {
     constructor(params) {
-        this.sharesAvailableInFirmRewardAccount = (params === null || params === void 0 ? void 0 : params.sharesAvailableInFirmRewardAccount) || [],
-            this.marketOpen = params === null || params === void 0 ? void 0 : params.marketOpen;
+        (this.sharesAvailableInFirmRewardAccount =
+            (params === null || params === void 0 ? void 0 : params.sharesAvailableInFirmRewardAccount) || []),
+            (this.marketOpen = params === null || params === void 0 ? void 0 : params.marketOpen);
         this.brokerTradableAssets = params === null || params === void 0 ? void 0 : params.brokerTradableAssets;
     }
     getRewardsAccountPositions() {
@@ -26,18 +27,30 @@ class TestBroker {
             return {
                 open: this.marketOpen,
                 nextOpeningTime: "01-02-2021-09:00",
-                nextClosingTime: "01-02-2021-16:00",
+                nextClosingTime: "01-02-2021-16:00"
             };
         });
     }
     listTradableAssets() {
         return __awaiter(this, void 0, void 0, function* () {
-            return this.brokerTradableAssets;
+            let tradableAssets = [];
+            this.brokerTradableAssets.forEach((asset) => tradableAssets.push({ tickerSymbol: asset.tickerSymbol }));
+            return tradableAssets;
         });
     }
     buySharesInRewardsAccount(tickerSymbol, quantity) {
         return __awaiter(this, void 0, void 0, function* () {
             return { success: true, sharePricePaid: 10 };
+        });
+    }
+    getLatestPrice(tickerSymbol) {
+        return __awaiter(this, void 0, void 0, function* () {
+            for (const asset of this.brokerTradableAssets) {
+                if (asset.tickerSymbol == tickerSymbol) {
+                    return { sharePrice: asset.price };
+                }
+            }
+            throw Error("Share not recognised by system");
         });
     }
 }

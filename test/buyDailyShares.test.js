@@ -11,12 +11,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const buyDailyShares_1 = require("../src/services/buyDailyShares");
 const testBroker_1 = require("./testBroker");
+const testDatabase_1 = require("./testDatabase");
 beforeEach(() => {
     jest.resetAllMocks();
     jest.clearAllMocks();
 });
 test("buyDailyShares: throws error with next market opening/closing time if user attempts to buy shares when market is not open", () => __awaiter(void 0, void 0, void 0, function* () {
-    const buyDailyShares = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({ marketOpen: false }));
+    const buyDailyShares = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({ marketOpen: false }), new testDatabase_1.TestDatabase({
+        totalSpentOnShares: 100,
+        totalNumberOfSharesDistributed: 2
+    }), 100);
     let error;
     try {
         yield buyDailyShares.buyShares(100);
@@ -30,21 +34,48 @@ test("buyDailyShares: throws error with next market opening/closing time if user
         nextClosingTime: "01-02-2021-16:00"
     });
 }));
-test("buyDailyShares: buys a share for rewards account at that is listed by the broker", () => __awaiter(void 0, void 0, void 0, function* () {
-    const buyDailyShares = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({
-        marketOpen: true,
-        brokerTradableAssets: [{ tickerSymbol: "tickerId1", price: 10 }]
-    }));
-    const buySharesInRewardsAccountSpy = jest.spyOn(testBroker_1.TestBroker.prototype, "buySharesInRewardsAccount");
-    yield buyDailyShares.buyShares(1);
-    expect(buySharesInRewardsAccountSpy).toBeCalledWith("tickerId1", 1);
-}));
 test("buyDailyShares: buys 10 shares for rewards account when number specified is 10", () => __awaiter(void 0, void 0, void 0, function* () {
     const buyDailyShares = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({
         marketOpen: true,
-        brokerTradableAssets: [{ tickerSymbol: "tickerId1", price: 10 }]
-    }));
+        brokerTradableAssets: [
+            { tickerSymbol: "tickerId1", price: 10 },
+            { tickerSymbol: "tickerId2", price: 180 }
+        ]
+    }), new testDatabase_1.TestDatabase({
+        totalSpentOnShares: 100,
+        totalNumberOfSharesDistributed: 2
+    }), 100);
     const buySharesInRewardsAccountSpy = jest.spyOn(testBroker_1.TestBroker.prototype, "buySharesInRewardsAccount");
-    const result = yield buyDailyShares.buyShares(10);
+    yield buyDailyShares.buyShares(10);
     expect(buySharesInRewardsAccountSpy).toBeCalledTimes(10);
+}));
+test("buyDailyShares: if current cost per acquisition is below target CPA, the next share distributed is above current cost per acquisition", () => __awaiter(void 0, void 0, void 0, function* () {
+    const buyDailyShares = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({
+        marketOpen: true,
+        brokerTradableAssets: [
+            { tickerSymbol: "tickerId1", price: 10 },
+            { tickerSymbol: "tickerId2", price: 180 }
+        ]
+    }), new testDatabase_1.TestDatabase({
+        totalSpentOnShares: 100,
+        totalNumberOfSharesDistributed: 2
+    }), 100);
+    const buySharesInRewardsAccountSpy = jest.spyOn(testBroker_1.TestBroker.prototype, "buySharesInRewardsAccount");
+    yield buyDailyShares.buyShares(1);
+    expect(buySharesInRewardsAccountSpy).toBeCalledWith("tickerId2", 1);
+}));
+test("buyDailyShares: if current cost per acquisition is above target CPA, the next share distributed is below current cost per acquisition", () => __awaiter(void 0, void 0, void 0, function* () {
+    const buyDailyShares = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({
+        marketOpen: true,
+        brokerTradableAssets: [
+            { tickerSymbol: "tickerId1", price: 10 },
+            { tickerSymbol: "tickerId2", price: 180 }
+        ]
+    }), new testDatabase_1.TestDatabase({
+        totalSpentOnShares: 100,
+        totalNumberOfSharesDistributed: 2
+    }), 10);
+    const buySharesInRewardsAccountSpy = jest.spyOn(testBroker_1.TestBroker.prototype, "buySharesInRewardsAccount");
+    yield buyDailyShares.buyShares(1);
+    expect(buySharesInRewardsAccountSpy).toBeCalledWith("tickerId1", 1);
 }));

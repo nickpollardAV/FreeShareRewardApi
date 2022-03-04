@@ -13,25 +13,29 @@ export class MainApp implements GetFreeShareApp {
   }
 
   async getFreeShare(): Promise<PostSuccessResponseBody> {
-    const rewardAccountPositions = await this.broker.getRewardsAccountPositions();
-    if (rewardAccountPositions.length == 0) {
-      throw "No available account positions";
-    }
-    const currentCpa =
-      (await this.database.getTotalSpentOnShares()) /
-      (await this.database.getTotalNumberOfSharesDistributed());
-
-    const newPositions = getBrokerPositionsForCpa(
-      rewardAccountPositions,
-      currentCpa,
-      this.targetCpa
-    );
-
-    const randomPosition =
-      newPositions[Math.floor(Math.random() * newPositions.length)];
-
-    await this.database.addShare(randomPosition);
-
-    return { shareId: randomPosition.tickerSymbol };
+    return { shareId: "test" };
   }
+
+  // async getFreeShare(): Promise<PostSuccessResponseBody> {
+  // const rewardAccountPositions = await this.broker.getRewardsAccountPositions();
+  // if (rewardAccountPositions.length == 0) {
+  //   throw "No available account positions";
+  // }
+  // const currentCpa =
+  //   (await this.database.getTotalSpentOnShares()) /
+  //   (await this.database.getTotalNumberOfSharesDistributed());
+  //
+  // const newPositions = getBrokerPositionsForCpa(
+  //   rewardAccountPositions,
+  //   currentCpa,
+  //   this.targetCpa
+  // );
+  //
+  // const randomPosition =
+  //   newPositions[Math.floor(Math.random() * newPositions.length)];
+  //
+  // await this.database.addShare(randomPosition);
+  //
+  // return { shareId: randomPosition.tickerSymbol };
+  // }
 }

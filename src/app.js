@@ -42,7 +42,7 @@ const tsoa_1 = require("tsoa");
 exports.app = (0, express_1.default)();
 // Use body parser to read sent json payloads
 exports.app.use(body_parser_1.default.urlencoded({
-    extended: true,
+    extended: true
 }));
 exports.app.use(body_parser_1.default.json());
 exports.app.use("/docs", swagger_ui_express_1.default.serve, (_req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -54,13 +54,13 @@ exports.app.use(function errorHandler(err, req, res, next) {
         console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
         return res.status(400).json({
             message: "Validation Failed",
-            details: err === null || err === void 0 ? void 0 : err.fields,
+            details: err === null || err === void 0 ? void 0 : err.fields
         });
     }
-    if (err instanceof Error) {
-        return res.status(500).json({
-            message: "Internal Server Error",
-        });
-    }
+    // if (err instanceof Error) {
+    return res.status(500).json({
+        message: "Internal Server Error"
+    });
+    // }
     next();
 });

@@ -2,6 +2,7 @@ import { Broker } from "../interfaces/broker";
 import { Database } from "../interfaces/database";
 import { addPriceToAssetList } from "./addPriceToAssetList";
 import { calculateAssetToPurchase } from "./calculateAssetToPurchase";
+import { config } from "dotenv-safe";
 
 export class BuyDailyShares {
   private broker: Broker;
@@ -17,7 +18,7 @@ export class BuyDailyShares {
   async buyShares(numberOfShares: number): Promise<void> {
     const marketOpen = await this.broker.isMarketOpen();
     if (!marketOpen.open) {
-      throw marketOpen;
+      throw Error("Market not open");
     }
 
     const tradableAssets = await this.broker.listTradableAssets();
@@ -37,10 +38,17 @@ export class BuyDailyShares {
         currentCpa,
         this.targetCpa
       );
+      console.log(assetToPurchase);
       await this.broker.buySharesInRewardsAccount(
         assetToPurchase.tickerSymbol,
         1
       );
+      await this.database.addShare({
+        tickerSymbol: assetToPurchase.tickerSymbol,
+        quantity: 1,
+        sharePrice: assetToPurchase.price
+      });
+      console.log("Current CPA: " + currentCpa);
     }
   }
 }

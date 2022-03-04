@@ -1,23 +1,20 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getRewardAccountPositionForCpa = void 0;
-function getRewardAccountPositionForCpa(rewardAccountPositions, currentCpa, targetCpa) {
-    let newAccountPositionArray = [];
+exports.calculateAssetToPurchase = void 0;
+function calculateAssetToPurchase(brokerAccountPositions, currentCpa, targetCpa) {
     const currentlyBelowTargetCpa = targetCpa > currentCpa;
-    if (currentlyBelowTargetCpa) {
-        rewardAccountPositions.forEach((position) => {
-            if (position.sharePrice > currentCpa) {
-                newAccountPositionArray.push(position);
+    for (const position of brokerAccountPositions) {
+        if (currentlyBelowTargetCpa) {
+            if (position.price > currentCpa) {
+                return position;
             }
-        });
-    }
-    else {
-        rewardAccountPositions.forEach((position) => {
-            if (position.sharePrice < currentCpa) {
-                newAccountPositionArray.push(position);
+        }
+        else {
+            if (position.price <= currentCpa) {
+                return position;
             }
-        });
+        }
     }
-    return newAccountPositionArray;
+    throw "Error identifying asset";
 }
-exports.getRewardAccountPositionForCpa = getRewardAccountPositionForCpa;
+exports.calculateAssetToPurchase = calculateAssetToPurchase;

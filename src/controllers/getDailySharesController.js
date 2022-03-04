@@ -20,9 +20,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.GetDailySharesController = void 0;
 const tsoa_1 = require("tsoa");
+const buyDailyShares_1 = require("../services/buyDailyShares");
+const testBroker_1 = require("../../test/testBroker");
+const testDatabase_1 = require("../../test/testDatabase");
 let GetDailySharesController = class GetDailySharesController extends tsoa_1.Controller {
     getDailyShares(requestBody) {
         return __awaiter(this, void 0, void 0, function* () {
+            const buyDailySharesApp = new buyDailyShares_1.BuyDailyShares(new testBroker_1.TestBroker({
+                brokerTradableAssets: [
+                    { tickerSymbol: "tickerId1", price: 10 },
+                    { tickerSymbol: "tickerId2", price: 180 },
+                    { tickerSymbol: "tickerId3", price: 2 },
+                    { tickerSymbol: "tickerId4", price: 130 },
+                    { tickerSymbol: "tickerId5", price: 60 },
+                    { tickerSymbol: "tickerId6", price: 220 },
+                    { tickerSymbol: "tickerId7", price: 180 },
+                    { tickerSymbol: "tickerId8", price: 34 },
+                    { tickerSymbol: "tickerId9", price: 111 },
+                    { tickerSymbol: "tickerId10", price: 56 },
+                    { tickerSymbol: "tickerId11", price: 30 },
+                    { tickerSymbol: "tickerId12", price: 300 },
+                    { tickerSymbol: "tickerId13", price: 22 }
+                ],
+                marketOpen: true
+            }), new testDatabase_1.TestDatabase({
+                totalSpentOnShares: 100,
+                totalNumberOfSharesDistributed: 2
+            }), 120);
+            yield buyDailySharesApp.buyShares(requestBody.numberOfSharesToPurchase);
             this.setStatus(200); // set return status 201
             return {
                 success: true

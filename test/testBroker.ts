@@ -58,6 +58,6 @@ export class TestBroker implements Broker {
       }
     }
 
-    throw "Share not recognised by system";
+    throw Error("Share not recognised by system");
   }
 }

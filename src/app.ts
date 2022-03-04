@@ -1,17 +1,20 @@
-import express, { Response as ExResponse, Request as ExRequest, NextFunction } from "express";
+import express, {
+  Response as ExResponse,
+  Request as ExRequest,
+  NextFunction
+} from "express";
 import swaggerUi from "swagger-ui-express";
 import bodyParser from "body-parser";
 import { RegisterRoutes } from "../build/routes";
 import { config } from "dotenv-safe";
 import { ValidateError } from "tsoa";
-
-config()
+config();
 export const app = express();
 
 // Use body parser to read sent json payloads
 app.use(
   bodyParser.urlencoded({
-    extended: true,
+    extended: true
   })
 );
 app.use(bodyParser.json());
@@ -34,14 +37,14 @@ app.use(function errorHandler(
     console.warn(`Caught Validation Error for ${req.path}:`, err.fields);
     return res.status(400).json({
       message: "Validation Failed",
-      details: err?.fields,
+      details: err?.fields
     });
   }
-  if (err instanceof Error) {
-    return res.status(500).json({
-      message: "Internal Server Error",
-    });
-  }
+  // if (err instanceof Error) {
+  return res.status(500).json({
+    message: "Internal Server Error"
+  });
+  // }
 
   next();
 });

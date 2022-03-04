@@ -10,23 +10,36 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BuyDailyShares = void 0;
+const addPriceToAssetList_1 = require("./addPriceToAssetList");
+const calculateAssetToPurchase_1 = require("./calculateAssetToPurchase");
 class BuyDailyShares {
-    constructor(broker) {
+    constructor(broker, database, targetCpa) {
         this.broker = broker;
+        this.database = database;
+        this.targetCpa = targetCpa;
     }
     buyShares(numberOfShares) {
         return __awaiter(this, void 0, void 0, function* () {
             const marketOpen = yield this.broker.isMarketOpen();
             if (!marketOpen.open) {
-                throw marketOpen;
+                throw Error("Market not open");
             }
             const tradableAssets = yield this.broker.listTradableAssets();
-            console.log("HERE!");
+            const tradableAssetsWithPrice = yield (0, addPriceToAssetList_1.addPriceToAssetList)(tradableAssets, this.broker);
+            const totalSpentOnShares = yield this.database.getTotalSpentOnShares();
+            const totalNumberOfSharesDistributed = yield this.database.getTotalNumberOfSharesDistributed();
+            const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
             for (let i = 0; i < numberOfShares; i++) {
-                console.log("HERE2");
-                yield this.broker.buySharesInRewardsAccount(tradableAssets[0].tickerSymbol, 1);
+                const assetToPurchase = (0, calculateAssetToPurchase_1.calculateAssetToPurchase)(tradableAssetsWithPrice, currentCpa, this.targetCpa);
+                console.log(assetToPurchase);
+                yield this.broker.buySharesInRewardsAccount(assetToPurchase.tickerSymbol, 1);
+                yield this.database.addShare({
+                    tickerSymbol: assetToPurchase.tickerSymbol,
+                    quantity: 1,
+                    sharePrice: assetToPurchase.price
+                });
+                console.log("Current CPA: " + currentCpa);
             }
-            return "hi";
         });
     }
 }

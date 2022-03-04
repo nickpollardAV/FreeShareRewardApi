@@ -7,6 +7,9 @@
       "specVersion": 3
     },
     "routes": {
-      "routesDir": "build"
+      "routesDir": "build",
+      "controllerPathGlobs": [
+        "./build/*.ts"
+      ]
     }
   }
