@@ -39,6 +39,22 @@ export class BuyDailyShares {
       this.broker
     );
 
+    let purchasedAssetList = await this.purchaseAssets(
+      numberOfShares,
+      tradableAssetsWithPrice
+    );
+    if (process.env.SAVE_ACQUIRED_SHARES == "true") {
+      fs.writeFileSync(
+        "purchased-shares-for-rewards.json",
+        JSON.stringify({ shares: purchasedAssetList })
+      );
+    }
+  }
+
+  private async purchaseAssets(
+    numberOfShares: number,
+    tradableAssetsWithPrice: { tickerSymbol: string; price: number }[]
+  ) {
     let purchasedAssetList = [];
 
     for (let i = 0; i < numberOfShares; i++) {
@@ -74,11 +90,6 @@ export class BuyDailyShares {
 
       purchasedAssetList.push(share);
     }
-    if (process.env.SAVE_ACQUIRED_SHARES == "true") {
-      fs.writeFileSync(
-        "purchased-shares-for-rewards.json",
-        JSON.stringify({ shares: purchasedAssetList })
-      );
-    }
+    return purchasedAssetList;
   }
 }

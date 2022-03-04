@@ -1,0 +1,17 @@
+{
+  "brokerAssets": [
+    { "tickerSymbol": "tickerId1", "price": 10 },
+    { "tickerSymbol": "tickerId2", "price": 180 },
+    { "tickerSymbol": "tickerId3", "price": 2 },
+    { "tickerSymbol": "tickerId4", "price": 130 },
+    { "tickerSymbol": "tickerId5", "price": 60 },
+    { "tickerSymbol": "tickerId6", "price": 220 },
+    { "tickerSymbol": "tickerId7", "price": 180 },
+    { "tickerSymbol": "tickerId8", "price": 34 },
+    { "tickerSymbol": "tickerId9", "price": 111 },
+    { "tickerSymbol": "tickerId10", "price": 56 },
+    { "tickerSymbol": "tickerId11", "price": 30 },
+    { "tickerSymbol": "tickerId12", "price": 300 },
+    { "tickerSymbol": "tickerId13", "price": 22 }
+  ]
+}

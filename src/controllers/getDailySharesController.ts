@@ -2,32 +2,18 @@ import { Body, Controller, Post, Route, SuccessResponse, Response } from "tsoa";
 import { BuyDailyShares } from "../services/buyDailyShares";
 import { TestBroker } from "../../test/testBroker";
 import { TestDatabase } from "../../test/testDatabase";
+import fs from "fs";
 
 @Route("/get-daily-shares")
 export class GetDailySharesController extends Controller {
-  @SuccessResponse("200", "Success")
-  @Response("400", "Bad Request")
-  @Post()
-  public async getDailyShares(
-    @Body() requestBody: { numberOfSharesToPurchase: number }
-  ): Promise<{ success: boolean }> {
-    const buyDailySharesApp = new BuyDailyShares(
+  private buyDailySharesApp: BuyDailyShares;
+  constructor() {
+    super();
+    this.buyDailySharesApp = new BuyDailyShares(
       new TestBroker({
-        brokerTradableAssets: [
-          { tickerSymbol: "tickerId1", price: 10 },
-          { tickerSymbol: "tickerId2", price: 180 },
-          { tickerSymbol: "tickerId3", price: 2 },
-          { tickerSymbol: "tickerId4", price: 130 },
-          { tickerSymbol: "tickerId5", price: 60 },
-          { tickerSymbol: "tickerId6", price: 220 },
-          { tickerSymbol: "tickerId7", price: 180 },
-          { tickerSymbol: "tickerId8", price: 34 },
-          { tickerSymbol: "tickerId9", price: 111 },
-          { tickerSymbol: "tickerId10", price: 56 },
-          { tickerSymbol: "tickerId11", price: 30 },
-          { tickerSymbol: "tickerId12", price: 300 },
-          { tickerSymbol: "tickerId13", price: 22 }
-        ],
+        brokerTradableAssets: JSON.parse(
+          fs.readFileSync("./example-broker-assets.json", "utf8")
+        ).brokerAssets,
         marketOpen: process.env.MARKET_OPEN === "true"
       }),
       new TestDatabase({
@@ -38,9 +24,17 @@ export class GetDailySharesController extends Controller {
       +(process.env.MINIMUM_SHARE_PRICE || "0"),
       +(process.env.MAXIMUM_SHARE_PRICE || "1000")
     );
-
-    await buyDailySharesApp.buyShares(requestBody.numberOfSharesToPurchase);
-    this.setStatus(200); // set return status 201
+  }
+  @SuccessResponse("200", "Success")
+  @Response("400", "Bad Request")
+  @Post()
+  public async getDailyShares(
+    @Body() requestBody: { numberOfSharesToPurchase: number }
+  ): Promise<{ success: boolean }> {
+    await this.buyDailySharesApp.buyShares(
+      requestBody.numberOfSharesToPurchase
+    );
+    this.setStatus(200);
     return {
       success: true
     };

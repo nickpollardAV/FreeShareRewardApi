@@ -49,6 +49,14 @@ class BuyDailyShares {
             }
             const tradableAssets = yield this.broker.listTradableAssets();
             const tradableAssetsWithPrice = yield (0, addPriceToAssetList_1.addPriceToAssetList)(tradableAssets, this.broker);
+            let purchasedAssetList = yield this.purchaseAssets(numberOfShares, tradableAssetsWithPrice);
+            if (process.env.SAVE_ACQUIRED_SHARES == "true") {
+                fs.writeFileSync("purchased-shares-for-rewards.json", JSON.stringify({ shares: purchasedAssetList }));
+            }
+        });
+    }
+    purchaseAssets(numberOfShares, tradableAssetsWithPrice) {
+        return __awaiter(this, void 0, void 0, function* () {
             let purchasedAssetList = [];
             for (let i = 0; i < numberOfShares; i++) {
                 const totalSpentOnShares = yield this.database.getTotalSpentOnShares();
@@ -71,9 +79,7 @@ class BuyDailyShares {
                 console.log("Current CPA: " + currentCpa);
                 purchasedAssetList.push(share);
             }
-            if (process.env.SAVE_ACQUIRED_SHARES == "true") {
-                fs.writeFileSync("purchased-shares-for-rewards.json", JSON.stringify({ shares: purchasedAssetList }));
-            }
+            return purchasedAssetList;
         });
     }
 }
