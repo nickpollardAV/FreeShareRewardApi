@@ -18,7 +18,7 @@ The method means that all the complex and potentially time-consuming tasks are h
 
 **Note: the algorithm falls over if the chosen CPA is above/below any of the available shares for purchase. This edge case would need to be handled.
 
-##How to run
+## How to run
 
 I used Yarn for this project since this is what Tsoa requires.
 
