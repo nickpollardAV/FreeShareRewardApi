@@ -41,12 +41,12 @@ exports.FreeShareController = void 0;
 const tsoa_1 = require("tsoa");
 const getFreeShare_1 = require("../services/getFreeShare");
 const testBroker_1 = require("../../test/testBroker");
-const testDatabase_1 = require("../../test/testDatabase");
 const fs = __importStar(require("fs"));
+const database_1 = require("../services/database");
 let FreeShareController = class FreeShareController extends tsoa_1.Controller {
     constructor() {
         super();
-        this.getFreeShareApp = new getFreeShare_1.GetFreeShareApp(new testBroker_1.TestBroker({ marketOpen: process.env.MARKET_OPEN === "true" }), new testDatabase_1.TestDatabase({
+        this.getFreeShareApp = new getFreeShare_1.GetFreeShareApp(new testBroker_1.TestBroker({ marketOpen: process.env.MARKET_OPEN === "true" }), new database_1.Database({
             totalSpentOnShares: 100,
             totalNumberOfSharesDistributed: 2,
             sharesAdded: JSON.parse(fs.readFileSync("./purchased-shares-for-rewards.json", "utf8")).shares

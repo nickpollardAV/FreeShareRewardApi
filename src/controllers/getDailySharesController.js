@@ -34,8 +34,8 @@ let GetDailySharesController = class GetDailySharesController extends tsoa_1.Con
             brokerTradableAssets: JSON.parse(fs_1.default.readFileSync("./example-broker-assets.json", "utf8")).brokerAssets,
             marketOpen: process.env.MARKET_OPEN === "true"
         }), new testDatabase_1.TestDatabase({
-            totalSpentOnShares: 100,
-            totalNumberOfSharesDistributed: 2
+            totalSpentOnShares: +(process.env.TARGET_CPA || "100"),
+            totalNumberOfSharesDistributed: 1
         }), +(process.env.TARGET_CPA || "100"), +(process.env.MINIMUM_SHARE_PRICE || "0"), +(process.env.MAXIMUM_SHARE_PRICE || "1000"));
     }
     getDailyShares(requestBody) {

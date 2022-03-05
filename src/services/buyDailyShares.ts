@@ -1,16 +1,17 @@
 import { Broker } from "../interfaces/broker";
 import { Database } from "../interfaces/database";
-import { addPriceToAssetList } from "./addPriceToAssetList";
-import { calculateAssetToPurchase } from "./calculateAssetToPurchase";
-import * as fs from "fs";
+import { addPriceToAssetList } from "../utils/addPriceToAssetList";
+import { calculateAssetToPurchase } from "../utils/calculateAssetToPurchase";
 import { v4 as uuidv4 } from "uuid";
+import { removeAssetsOutsidePriceRange } from "../utils/removeAssetsOutsidePriceRange";
+import { savePurchasedAssetData } from "../utils/savePurchasedAssetData";
 
 export class BuyDailyShares {
-  private broker: Broker;
+  private readonly broker: Broker;
   private database: Database;
-  private targetCpa: number;
-  private minimumSharePrice: number;
-  private maximumSharePrice: number;
+  private readonly targetCpa: number;
+  private readonly minimumSharePrice: number;
+  private readonly maximumSharePrice: number;
 
   constructor(
     broker: Broker,
@@ -39,21 +40,23 @@ export class BuyDailyShares {
       this.broker
     );
 
+    const tradableAssetsWithinPriceRange = removeAssetsOutsidePriceRange(
+      tradableAssetsWithPrice,
+      this.minimumSharePrice,
+      this.maximumSharePrice
+    );
+
     let purchasedAssetList = await this.purchaseAssets(
       numberOfShares,
-      tradableAssetsWithPrice
+      tradableAssetsWithinPriceRange
     );
-    if (process.env.SAVE_ACQUIRED_SHARES == "true") {
-      fs.writeFileSync(
-        "purchased-shares-for-rewards.json",
-        JSON.stringify({ shares: purchasedAssetList })
-      );
-    }
+
+    savePurchasedAssetData(purchasedAssetList);
   }
 
   private async purchaseAssets(
     numberOfShares: number,
-    tradableAssetsWithPrice: { tickerSymbol: string; price: number }[]
+    tradableAssets: { tickerSymbol: string; price: number }[]
   ) {
     let purchasedAssetList = [];
 
@@ -63,11 +66,9 @@ export class BuyDailyShares {
       const currentCpa = totalSpentOnShares / totalNumberOfSharesDistributed;
 
       const assetToPurchase = calculateAssetToPurchase(
-        tradableAssetsWithPrice,
+        tradableAssets,
         currentCpa,
-        this.targetCpa,
-        this.minimumSharePrice,
-        this.maximumSharePrice
+        this.targetCpa
       );
       console.log(assetToPurchase);
       await this.broker.buySharesInRewardsAccount(

@@ -17,8 +17,8 @@ export class GetDailySharesController extends Controller {
         marketOpen: process.env.MARKET_OPEN === "true"
       }),
       new TestDatabase({
-        totalSpentOnShares: 100,
-        totalNumberOfSharesDistributed: 2
+        totalSpentOnShares: +(process.env.TARGET_CPA || "100"),
+        totalNumberOfSharesDistributed: 1
       }),
       +(process.env.TARGET_CPA || "100"),
       +(process.env.MINIMUM_SHARE_PRICE || "0"),

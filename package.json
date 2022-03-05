@@ -10,6 +10,7 @@
     "build": "tsoa spec-and-routes && tsc",
     "start": "ts-node src/server.ts",
     "test": "jest getFreeShare.test.ts buyDailyShares.test.ts",
+    "build-docker-image": "docker build --tag free-share-api .",
     "run-docker-image": "docker run -p 3000:3000 free-share-api"
   },
   "dependencies": {

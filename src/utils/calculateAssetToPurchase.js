@@ -1,18 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.calculateAssetToPurchase = void 0;
-function calculateAssetToPurchase(brokerAccountPositions, currentCpa, targetCpa, minimumSharePrice, maximumSharePrice) {
+function calculateAssetToPurchase(brokerAccountPositions, currentCpa, targetCpa) {
     const currentlyBelowTargetCpa = targetCpa > currentCpa;
     let chosenPosition;
-    let positionsWithinPriceRange = [];
-    brokerAccountPositions.forEach(position => {
-        if (minimumSharePrice < position.price &&
-            position.price < maximumSharePrice) {
-            positionsWithinPriceRange.push(position);
-        }
-    });
     while (!chosenPosition) {
-        const randomPosition = positionsWithinPriceRange[Math.floor(Math.random() * positionsWithinPriceRange.length)];
+        const randomPosition = brokerAccountPositions[Math.floor(Math.random() * brokerAccountPositions.length)];
         if (currentlyBelowTargetCpa) {
             if (randomPosition.price > currentCpa) {
                 chosenPosition = randomPosition;

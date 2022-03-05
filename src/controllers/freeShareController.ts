@@ -3,8 +3,8 @@ import { PostRequestBody } from "../interfaces/postRequestBody";
 import { PostSuccessResponseBody } from "../interfaces/postSuccessResponseBody";
 import { GetFreeShareApp } from "../services/getFreeShare";
 import { TestBroker } from "../../test/testBroker";
-import { TestDatabase } from "../../test/testDatabase";
 import * as fs from "fs";
+import { Database } from "../services/database";
 
 @Route("/claim-free-share")
 export class FreeShareController extends Controller {
@@ -14,7 +14,7 @@ export class FreeShareController extends Controller {
     super();
     this.getFreeShareApp = new GetFreeShareApp(
       new TestBroker({ marketOpen: process.env.MARKET_OPEN === "true" }),
-      new TestDatabase({
+      new Database({
         totalSpentOnShares: 100,
         totalNumberOfSharesDistributed: 2,
         sharesAdded: JSON.parse(
