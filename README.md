@@ -50,6 +50,8 @@ To run:
 yarn run-docker-image
 ```
 
+**Note: currently the .js files are living next to the .ts files. I think this needs changing in the tsoa config (which I would update in a real project).
+
 ### Endpoints
 
 Once running, the coolest way to play with the endpoints is to use the Swagger docs that Tsoa generates from the interfaces used. Find this at:
