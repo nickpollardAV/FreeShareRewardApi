@@ -10,9 +10,9 @@ export class TestBroker implements Broker {
     marketOpen?: boolean;
     brokerTradableAssets?: Array<any>;
   }) {
-    (this.sharesAvailableInFirmRewardAccount =
-      params?.sharesAvailableInFirmRewardAccount || []),
-      (this.marketOpen = params?.marketOpen);
+    this.sharesAvailableInFirmRewardAccount =
+      params?.sharesAvailableInFirmRewardAccount || [];
+    this.marketOpen = params?.marketOpen;
     this.brokerTradableAssets = params?.brokerTradableAssets;
   }
 
