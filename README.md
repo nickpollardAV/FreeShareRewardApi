@@ -20,7 +20,11 @@ The method means that all the complex and potentially time-consuming tasks are h
 
 ## How to run
 
-I used Yarn for this project since this is what Tsoa requires.
+I used Yarn for this project since this is what Tsoa requires, so please get yarn and run the following:
+
+```
+yarn install
+```
 
 a .env file is also required. Please copy the contents of the env.example.
 
