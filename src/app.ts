@@ -11,6 +11,8 @@ import { ValidateError } from "tsoa";
 config();
 export const app = express();
 
+console.log("new log")
+
 // Use body parser to read sent json payloads
 app.use(
   bodyParser.urlencoded({
