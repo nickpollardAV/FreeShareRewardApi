@@ -13,6 +13,10 @@ export const app = express();
 
 console.log("new log")
 console.log("NEW LOG 2")
+console.log("NEW LOG 3")
+console.log("NEW LOG 4")
+console.log("NEW LOG 5")
+console.log("NEW LOG 6")
 
 // Use body parser to read sent json payloads
 app.use(
