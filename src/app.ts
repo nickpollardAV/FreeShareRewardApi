@@ -12,6 +12,7 @@ config();
 export const app = express();
 
 console.log("new log")
+console.log("NEW LOG 2")
 
 // Use body parser to read sent json payloads
 app.use(
